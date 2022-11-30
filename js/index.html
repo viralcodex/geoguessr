@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>GeoGuessr</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+  <style type="text/css">
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    button {
+      width: 100px;
+      height: 25px;
+      color: white;
+      background-color: red;
+    }
+
+    img {
+      padding-top: 10px;
+    }
+
+    #street-view {
+      height: 100%;
+      /* Google inverts the colors if you don't have any billing set up.
+        We can go around this by adding a counter invert filter on top of the street view */
+      --webkit-filter: invert(1);
+    }
+
+    /* #floating-panel {
+        position: absolute;
+        top: 10px;
+        left: 5%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: "Roboto", "sans-serif";
+        line-height: 30px;
+        padding-left: 10px;
+        width: 20%;
+        height: 30%;
+      } */
+
+    #container {
+      background-color: #d3d3d3;
+      display: flex;
+      flex-direction: column;
+      height: 4rem;
+      padding: 10px;
+      align-items: center;
+      border-radius: .5rem .5rem 0 0;
+    }
+
+    #floating-panel {
+      border-radius: 0 0 .5rem .5rem;
+      position:absolute;
+      z-index: 5;
+      padding: 0;
+      
+    }
+
+    #guess-btn{
+      border-radius: 0 0 .5rem .5rem;
+      border: none;
+      padding: 5px 5px 5px 5px;
+      text-align: center;
+      background-color: rgb(53, 163, 167);
+      width: 20rem;
+      height: 2.5rem;
+    }
+    
+    #heading {
+      font-size: 30;
+      font-weight: 600;
+    }
+
+
+    /* #floating-panel {
+        margin-left: -100px;
+      }     */
+  </style>
+  <script type="text/javascript" src="places.js"></script>
+</head>
+
+<body>
+  <!-- The guess panel on top of the street view -->
+  <div id="floating-panel">
+    <div id="container">
+      <img
+        src="https://www.flaticon.com/svg/vstatic/svg/143/143960.svg?token=exp=1618227638~hmac=7f9a52aac37975da7d77fac34c73b8cb"
+        alt="icon" width="50px" height="50px">
+      <p id="heading"> If you know where we are, make a guess!</p>
+      <h2 id="score"></h2>
+    </div>
+      <button id="guess-btn" onclick="guess()">Guess</button>
+  </div>
+
+  <!-- Street view -->
+  <div id="street-view"></div>
+
+  <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initialize&libraries=&v=weekly" async></script>
+</body>
+
+</html>
