@@ -1,8 +1,5 @@
 {
-  "name": "Aviral",
-  "version": "0.0.0",
-  "description": "Geoguessr",
-  "main": "script.js",
+  "main": "index.html",
   "scripts": {
     "start": "node script.js"
   },
