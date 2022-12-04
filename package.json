@@ -1,7 +1,7 @@
 {
   "main": "../js/index.html",
   "scripts": {
-    "start": "node script.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "connect": "^3.7.0",
