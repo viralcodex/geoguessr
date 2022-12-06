@@ -6,21 +6,21 @@ var http = require('http')
 var fs = require('fs')
 let port = 8080;
 
-var connection = mysql.createConnection({
-  host: 'localhost',
-  database: 'geoguessr',
-  user: 'root',
-  password: '12345678',
-  connectTimeout: 60000
-});
-
 // var connection = mysql.createConnection({
-//   host: 'ccdatabase.cklu0ptkuzc7.us-east-1.rds.amazonaws.com',
-//   database: 'ccprojectdb',
-//   user: 'admin',
+//   host: 'localhost',
+//   database: 'geoguessr',
+//   user: 'root',
 //   password: '12345678',
 //   connectTimeout: 60000
 // });
+
+var connection = mysql.createConnection({
+  host: 'ccdatabase.cklu0ptkuzc7.us-east-1.rds.amazonaws.com',
+  database: 'ccprojectdb',
+  user: 'admin',
+  password: '12345678',
+  connectTimeout: 60000
+});
 
 var data3 = []
 
