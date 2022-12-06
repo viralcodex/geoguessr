@@ -41,9 +41,9 @@ connection.query(sql, (error, results, fields) => {
 
 module.exports = connection;
 
-app = connect().use(express.static("js"))
+app = connect().use(express.static("./"))
 
-app.use(express.static("../js/"));
+app.use(express.static("../"));
 
 const server = http.createServer(app).listen(port)
 

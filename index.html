@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>GeoGuessr</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+  <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
+  <style type="text/css">
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+    }
+
+
+    #street-view {
+      height: 100%;
+      /* Google inverts the colors if you don't have any billing set up.
+      We can go around this by adding a counter invert filter on top of the street view */
+      --webkit-filter: invert(1);
+    }
+
+
+    #floating-panel {
+      opacity: .3;
+      border-radius: 0 0 .5rem .5rem;
+      position: fixed;
+      left: 40%;
+      bottom: 1%;
+      z-index: 5;
+      padding: 0;
+
+    }
+
+    #floating-panel:hover {
+      opacity: 1;
+      transition: opacity .3s linear;
+    }
+
+    #container {
+      background-color: #d3d3d3;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 2rem;
+      height: 4rem;
+      align-items: center;
+      border-radius: .5rem .5rem 0 0;
+    }
+
+    #guess-input {
+      border-radius: .3rem;
+      border-color: azure;
+      padding: 5px;
+      width: 15rem;
+    }
+
+    #guess-btn {
+      border-radius: 0 0 .5rem .5rem;
+      font-weight: 600;
+      color: white;
+      border: none;
+      padding: 5px 5px 5px 5px;
+      text-align: center;
+      background-color: rgb(53, 163, 167);
+      width: 20rem;
+      height: 2rem;
+    }
+
+    #guess-btn:active {
+      background-color: rgb(79, 172, 70);
+    }
+
+    #score {
+      background-color: rgb(79, 172, 70);
+      padding: 10px 15px 10px 15px;
+      border-radius: .5rem .5rem .5rem .5rem;
+      position: fixed;
+      top: 0%;
+      left: 42.5%;
+      font-weight: 600;
+      font-size: 20;
+      color: rgb(234, 234, 234);
+    }
+
+    #heading {
+      font-size: 30;
+      font-weight: 600;
+      padding-top: 0;
+    }
+  </style>
+
+  <script type="text/javascript">
+    let score = 0
+
+    let panorama
+    
+    // Set different places where the player will be spawned
+      // console.log(place)
+
+    var places = [
+      [{ lat: 60.171001, lng: 24.939350 }, { country: 'Finland' }], // Helsinki, Finland
+      [{ lat: 48.858093, lng: 2.294694 }, { country: 'France' }], // Paris, France
+      [{ lat: 51.510020, lng: -0.134730 }, { country: 'England' }], // London, England
+      [{ lat: 41.8902, lng: 12.4922 }, { country: 'Italy' }], // Rome, Italy
+      [{ lat: 25.195302, lng: 55.272879 }, { country: 'UAE' }], // Dubai, United Arab Emirates
+      [{ lat: 1.283404, lng: 103.863134 }, { country: 'Singapore' }], // Marina Bay, Singapore
+      [{ lat: 29.976768, lng: 31.135538 }, { country: 'Egypt' }], // Cairo, Egypt
+      [{ lat: 40.757876, lng: -73.985592 }, { country: 'United States' }], // New York, USA
+      [{ lat: 27.175014, lng: 78.042152 }, { country: 'India' }], //Agra, India
+      [{ lat: 20.684284, lng: -88.567780 }, { country: 'Mexico' }], //Yucatan, Mexico
+      [{ lat: 43.642567, lng: -79.387054 }, { country: 'Canada' }], //Ontario, Canada
+      [{ lat: 2.953690, lng: -75.300301 }, { country: 'Greece' }], //Athens, Greece
+      [{ lat: 51.178883, lng: -1.826215 }, { country: 'England' }], //Salisbury, England
+      [{ lat: 21.3890824, lng: 39.8579118 }, { country: 'Saudi Arabia' }], //Mecca, Saudi Arabia
+      [{ lat: 55.75202329999999, lng: 37.6174994 }, { country: 'Russia' }], //Moscow, Russia
+    ]
+
+    let currentPlace = places[Math.floor(Math.random() * (places.length))]  // Pick a random place to be spawned
+    let duplicate = currentPlace
+    let coordinates = currentPlace[0] // Get coordinates
+    let country = currentPlace[1].country // Get the name of the country
+
+    // Reload game environment when a round is over
+    let reconfigure = () => {
+      document.getElementById("score").innerHTML = "Your current Country Streak: " + score
+      currentPlace = places[Math.floor(Math.random() * (places.length))]
+      coordinates = currentPlace[0]
+      country = currentPlace[1].country
+      document.getElementById("guess-input").value = ''
+      initialize()
+    }
+
+    // Check if guess is correct and then execute reconfiguring function
+    const guess = () => {
+
+      // var guess = window.prompt("Enter the Country")
+      var guess = document.getElementById("guess-input").value
+      if (guess === country) {
+        score++
+        alert("Correct! Current Country Streak: " + score)
+        reconfigure()
+      } else {
+        score = 0
+        alert("Incorrect! Current Country Streak: " + score)
+        reconfigure()
+      }
+    }
+
+    // Set and configure streetview 
+    function initialize() {
+      document.getElementById("score").innerHTML = "Your current Country Streak is: " + score
+      panorama = new google.maps.StreetViewPanorama(
+        document.getElementById("street-view"),
+        {
+          position: coordinates,
+          pov: { heading: 165, pitch: 0 },
+          zoom: 1,
+        }
+      )
+    }    
+  </script>
+</head>
+
+<body>
+  <!-- The guess panel on top of the street view -->
+  <div id="floating-panel">
+    <div id="container">
+      <!-- <img
+        src="https://www.flaticon.com/svg/vstatic/svg/143/143960.svg?token=exp=1618227638~hmac=7f9a52aac37975da7d77fac34c73b8cb"
+        alt="icon" width="50px" height="50px"> -->
+      <p id="heading">Guess in which country we are?</p>
+      <input type="text" placeholder="Your guess here..." id="guess-input">
+    </div>
+    <button id="guess-btn" onclick="guess()">Guess</button>
+    <p id="score"></p>
+  </div>
+
+  <!-- Street view -->
+  <div id="street-view"></div>
+
+  <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1B45hQ9P_zN25o6HNaxC6qL46BCDpam4&callback=initialize&libraries=&v=weekly"
+    async></script>
+</body>
+
+</html>
+<!-- AIzaSyCPCBH9xsifQFd6hIuRCqbWo41irBDnzaM -->
+<!-- AIzaSyA1B45hQ9P_zN25o6HNaxC6qL46BCDpam4 -->
